@@ -43,6 +43,7 @@ import logging
 import numpy
 from silx.gui import qt
 from silx.gui import icons
+from pilx.MainWindow import MainWindow
 
 from .matplotlib import pyplot, colors
 from ..utils import int_, str_, get_ui_file
@@ -481,6 +482,9 @@ class DiffMapWidget(qt.QWidget):
                 diffmap.nxs.close()
         logger.warning("Processing finished in %.3fs", time.perf_counter() - t0)
         self.progressbarChanged.emit(len(self.list_dataset), 0)
+        # close the widget
+        # self.fig.close()
+        self.open_pilx(config=self.get_config())
 
     def display_processing(self, config):
         """Setup the display for visualizing the processing
@@ -591,3 +595,9 @@ class DiffMapWidget(qt.QWidget):
         stop = (self.radial_data <= qmax).sum()
         self.slice = slice(start, stop)
         self.update_processing(-1, self.last_idx)
+
+    def open_pilx(self, config:dict):
+        diffmap_filename = config.get("output_file")
+        self.pilx_window = MainWindow()
+        self.pilx_window.initData(diffmap_filename)
+        self.pilx_window.show()
