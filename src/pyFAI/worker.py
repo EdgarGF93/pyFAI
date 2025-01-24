@@ -302,6 +302,10 @@ class Worker(object):
 
         with self._sem:
             monitor = self._normalization_factor * normalization_factor if self._normalization_factor else normalization_factor
+
+        if not self.ai.detector.guess_binning(data=data):
+            logger.warning("Detector configuration has changed!")
+
         kwarg = self.extra_options.copy()
         kwarg["unit"] = self.unit
         kwarg["dummy"] = self.dummy
